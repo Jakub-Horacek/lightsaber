@@ -24,7 +24,7 @@ A small, in-progress web project for viewing and interacting with a 3D model of 
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/lightsaber.git
+   git clone https://github.com/Jakub-Horacek/lightsaber.git
    cd lightsaber
    ```
 2. **Install dependencies:**
