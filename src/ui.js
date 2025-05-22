@@ -112,6 +112,16 @@ function setupUI() {
       directionalLightValue.textContent = directionalLightSlider.value;
     });
   }
+
+  // Drag rotation speed control
+  const dragSpeedSlider = document.getElementById("drag-rotation-speed-slider");
+  const dragSpeedValue = document.getElementById("drag-rotation-speed-value");
+  if (dragSpeedSlider && dragSpeedValue) {
+    dragSpeedValue.textContent = dragSpeedSlider.value;
+    dragSpeedSlider.addEventListener("input", () => {
+      dragSpeedValue.textContent = dragSpeedSlider.value;
+    });
+  }
 }
 
 export { setupUI };

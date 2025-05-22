@@ -19,6 +19,9 @@ function loadSaberModelAndApplySettings(saberSettings, emissionIntensity) {
       }
       toggleBlade(saberScene, bladeOn, 0);
       scene.add(saberScene);
+      // Expose for controls.js drag
+      window.saberScene = saberScene;
+      window.scene = scene;
       // Set emission to match slider value on load (from scene settings)
       if (typeof emissionIntensity === "number") {
         saberScene.traverse((child) => {

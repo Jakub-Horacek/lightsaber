@@ -3,6 +3,8 @@ import { composer } from "./postprocessing.js";
 import { loadSaberModelAndApplySettings } from "./modelLoader.js";
 import { applySceneSettings } from "./settings.js";
 import { setupUI } from "./ui.js";
+import { setupControls, setZoomDefaults } from "./controls.js";
+import { loadInterface } from "./interfaceLoader.js";
 
 function animate() {
   requestAnimationFrame(animate);
@@ -12,7 +14,8 @@ function animate() {
   composer.render();
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+  await loadInterface();
   Promise.all([
     fetch("assets/initial-scene-settings.json").then((r) => r.json()),
     fetch("assets/saber-initial-state.json").then((r) => r.json()),
@@ -20,6 +23,12 @@ window.addEventListener("DOMContentLoaded", () => {
     applySceneSettings(sceneSettings);
     setupUI();
     loadSaberModelAndApplySettings(saberSettings, sceneSettings.emissionIntensity);
+    setZoomDefaults({
+      min: sceneSettings.zoomMin,
+      max: sceneSettings.zoomMax,
+      speed: sceneSettings.zoomSpeed,
+    });
+    setupControls();
   });
   animate();
 });

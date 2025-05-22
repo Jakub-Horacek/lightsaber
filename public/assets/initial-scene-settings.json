@@ -5,5 +5,9 @@
   "bloomRadius": 0.75,
   "bloomExposure": 1,
   "ambientLight": 1.35,
-  "directionalLight": 1.8
+  "directionalLight": 1.8,
+  "zoomMin": 10,
+  "zoomMax": 350,
+  "zoomSpeed": 25,
+  "dragRotationSpeed": 0.01
 }
