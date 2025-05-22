@@ -56,13 +56,14 @@ This work is based on "Obi-Wan's Lightsaber (Jedi Master) - Star Wars" (https://
 ```
 
 - **No commercial use is permitted.**
-- See `public/assets/license.txt` for full details.
+- See [@LICENSE (3D Model)](./public/assets/LICENSE) for full details.
 
 ---
 
 ## Code License
 
-This project's code is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
+This project's code (including CSS, JavaScript, and all original source files) is licensed under the MIT License.  
+See [@LICENSE (Code)](./LICENSE) for details.
 
 ---
 
