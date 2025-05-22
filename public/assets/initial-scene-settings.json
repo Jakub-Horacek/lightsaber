@@ -11,7 +11,7 @@
   "zoomSpeed": 25,
   "dragRotationSpeed": 0.01,
   "photoMode": {
-    "resolution": [1920, 1080],
+    "resolution": ["window.innerWidth", "window.innerHeight"],
     "imageQuality": 0.92,
     "dofEnabled": false,
     "dofFocus": 100,

@@ -1,5 +1,6 @@
+import * as THREE from "three";
 import { bloomPass, bokehPass } from "./postprocessing.js";
-import { renderer, ambientLight, directionalLight } from "./scene.js";
+import { renderer, ambientLight, directionalLight, scene } from "./scene.js";
 import { saberScene } from "./modelLoader.js";
 import { toggleBlade } from "./saber.js";
 
@@ -175,6 +176,14 @@ function setupUI() {
   }
   if (autoFocusCheckbox) autoFocusCheckbox.addEventListener("change", updateDOF);
   updateDOF();
+
+  // Background color live update
+  const bgInput = document.getElementById("photo-bg-color");
+  if (bgInput) {
+    bgInput.addEventListener("input", () => {
+      scene.background = new THREE.Color(bgInput.value);
+    });
+  }
 }
 
 export { setupUI };

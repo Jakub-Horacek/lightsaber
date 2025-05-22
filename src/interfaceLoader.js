@@ -247,7 +247,12 @@ function createPhotoModeControls(settings) {
     const opt = document.createElement("option");
     opt.value = value.length ? value.join(",") : "";
     opt.textContent = label;
-    if (settings.photoMode.resolution[0] === value[0] && settings.photoMode.resolution[1] === value[1]) opt.selected = true;
+    if (
+      (value.length === 0 && settings.photoMode.resolution[0] === window.innerWidth && settings.photoMode.resolution[1] === window.innerHeight) ||
+      (settings.photoMode.resolution[0] === value[0] && settings.photoMode.resolution[1] === value[1])
+    ) {
+      opt.selected = true;
+    }
     resSelect.appendChild(opt);
   });
   resRow.appendChild(resSelect);
@@ -304,7 +309,7 @@ function createPhotoModeControls(settings) {
   });
   const dofFocusRow = dofFocusFrag.firstChild;
   dofFocusRow.className = "slider-row";
-  dofFocusRow.style.display = dofToggle.checked ? "flex" : "none";
+  dofFocusRow.style.display = "none";
   photoControls.appendChild(dofFocusRow);
 
   const dofApertureFrag = createSlider({
@@ -318,7 +323,7 @@ function createPhotoModeControls(settings) {
   });
   const dofApertureRow = dofApertureFrag.firstChild;
   dofApertureRow.className = "slider-row";
-  dofApertureRow.style.display = dofToggle.checked ? "flex" : "none";
+  dofApertureRow.style.display = "none";
   photoControls.appendChild(dofApertureRow);
 
   // Focus Distance (manual)
@@ -333,6 +338,7 @@ function createPhotoModeControls(settings) {
   });
   const focusDistanceRow = focusDistanceFrag.firstChild;
   focusDistanceRow.className = "slider-row";
+  focusDistanceRow.style.display = "none";
   photoControls.appendChild(focusDistanceRow);
 
   // Auto Focus Saber checkbox
@@ -346,12 +352,19 @@ function createPhotoModeControls(settings) {
   autoFocusCheckbox.type = "checkbox";
   autoFocusCheckbox.id = "photo-dof-auto-focus";
   autoFocusRow.appendChild(autoFocusCheckbox);
+  autoFocusRow.style.display = "none";
   photoControls.appendChild(autoFocusRow);
 
-  dofToggle.addEventListener("change", () => {
-    dofFocusRow.style.display = dofToggle.checked ? "flex" : "none";
-    dofApertureRow.style.display = dofToggle.checked ? "flex" : "none";
-  });
+  function updateDOFSettingsVisibility() {
+    const show = dofToggle.checked;
+    dofFocusRow.style.display = show ? "flex" : "none";
+    dofApertureRow.style.display = show ? "flex" : "none";
+    focusDistanceRow.style.display = show ? "flex" : "none";
+    autoFocusRow.style.display = show ? "flex" : "none";
+  }
+  updateDOFSettingsVisibility();
+  dofToggle.addEventListener("change", updateDOFSettingsVisibility);
+  dofToggle.addEventListener("input", updateDOFSettingsVisibility);
 
   // Take Photo Button
   const btnRow = document.createElement("div");
@@ -466,6 +479,14 @@ function createLightingControls(settings) {
 async function loadInterface() {
   const response = await fetch("assets/initial-scene-settings.json");
   const settings = await response.json();
+  // Patch photoMode.resolution if set to window size placeholders
+  if (
+    Array.isArray(settings.photoMode?.resolution) &&
+    settings.photoMode.resolution[0] === "window.innerWidth" &&
+    settings.photoMode.resolution[1] === "window.innerHeight"
+  ) {
+    settings.photoMode.resolution = [window.innerWidth, window.innerHeight];
+  }
 
   // Use a fragment for efficient DOM insertion
   const fragment = document.createDocumentFragment();
