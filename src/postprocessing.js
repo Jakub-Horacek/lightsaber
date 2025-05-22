@@ -1,6 +1,7 @@
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass.js";
 import * as THREE from "three";
 import { scene, camera, renderer } from "./scene.js";
 
@@ -9,6 +10,14 @@ const bloomParams = {
   bloomStrength: 2.2,
   bloomThreshold: 0,
   bloomRadius: 0.25,
+};
+
+const bokehParams = {
+  focus: 100.0,
+  aperture: 0.025,
+  maxblur: 1.0,
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
 
 const composer = new EffectComposer(renderer);
@@ -23,4 +32,13 @@ const bloomPass = new UnrealBloomPass(
 );
 composer.addPass(bloomPass);
 
-export { composer, bloomPass, bloomParams, renderPass };
+const bokehPass = new BokehPass(scene, camera, {
+  focus: bokehParams.focus,
+  aperture: bokehParams.aperture,
+  maxblur: bokehParams.maxblur,
+  width: bokehParams.width,
+  height: bokehParams.height,
+});
+composer.addPass(bokehPass);
+
+export { composer, bloomPass, bloomParams, renderPass, bokehPass, bokehParams };

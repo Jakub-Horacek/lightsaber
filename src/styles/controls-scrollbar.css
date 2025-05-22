@@ -1,0 +1,60 @@
+/* Custom scrollbar for .controls div - neon/cyber style */
+.controls {
+  scrollbar-width: thin;
+  scrollbar-color: #0ff #23243a;
+}
+
+.controls::-webkit-scrollbar {
+  width: 10px;
+  background: #23243a;
+  border-radius: 8px;
+}
+
+.controls::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #0ff 60%, #00f 100%);
+  border-radius: 8px;
+  box-shadow: 0 0 8px #0ff, 0 0 2px #00f inset;
+  border: 2px solid #181c2a;
+}
+
+.controls::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #00f 60%, #0ff 100%);
+  box-shadow: 0 0 12px #0ff, 0 0 4px #00f inset;
+}
+
+.controls::-webkit-scrollbar-corner {
+  background: #23243a;
+}
+
+/* Global custom scrollbar for html/body - neon/cyber style */
+html,
+body {
+  scrollbar-width: thin;
+  scrollbar-color: #0ff #23243a;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 10px;
+  background: #23243a;
+  border-radius: 8px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #0ff 60%, #00f 100%);
+  border-radius: 8px;
+  box-shadow: 0 0 8px #0ff, 0 0 2px #00f inset;
+  border: 2px solid #181c2a;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #00f 60%, #0ff 100%);
+  box-shadow: 0 0 12px #0ff, 0 0 4px #00f inset;
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner {
+  background: #23243a;
+}

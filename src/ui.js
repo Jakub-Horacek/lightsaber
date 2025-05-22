@@ -1,9 +1,20 @@
-import { bloomPass } from "./postprocessing.js";
+import { bloomPass, bokehPass } from "./postprocessing.js";
 import { renderer, ambientLight, directionalLight } from "./scene.js";
 import { saberScene } from "./modelLoader.js";
 import { toggleBlade } from "./saber.js";
 
 let bladeOn = true;
+
+function getSaberFocusDistance(camera, saber) {
+  if (!saber) return 100;
+  // Get world position of saber
+  const saberPos = new THREE.Vector3();
+  saber.getWorldPosition(saberPos);
+  // Get world position of camera
+  const camPos = new THREE.Vector3();
+  camera.getWorldPosition(camPos);
+  return camPos.distanceTo(saberPos);
+}
 
 function setupUI() {
   // Toggle blade switch (new version)
@@ -122,6 +133,48 @@ function setupUI() {
       dragSpeedValue.textContent = dragSpeedSlider.value;
     });
   }
+
+  // Photo mode sliders
+  const photoQualitySlider = document.getElementById("photo-quality-slider");
+  const photoQualityValue = document.getElementById("photo-quality-value");
+  if (photoQualitySlider && photoQualityValue) {
+    photoQualityValue.textContent = photoQualitySlider.value;
+    photoQualitySlider.addEventListener("input", () => {
+      photoQualityValue.textContent = photoQualitySlider.value;
+    });
+  }
+  const dofToggle = document.getElementById("photo-dof-toggle");
+  const dofFocusSlider = document.getElementById("photo-dof-focus-slider");
+  const dofApertureSlider = document.getElementById("photo-dof-aperture-slider");
+  const focusDistanceSlider = document.getElementById("photo-dof-focus-distance-slider");
+  const focusDistanceValue = document.getElementById("photo-dof-focus-distance-value");
+  const autoFocusCheckbox = document.getElementById("photo-dof-auto-focus");
+  function updateDOF() {
+    if (!dofToggle) return;
+    bokehPass.enabled = dofToggle.checked;
+    // Focus distance: auto or manual
+    let focusValue = 100;
+    if (autoFocusCheckbox && autoFocusCheckbox.checked && window.saberScene && window.camera) {
+      focusValue = getSaberFocusDistance(window.camera, window.saberScene);
+      if (focusDistanceSlider) focusDistanceSlider.value = focusValue;
+      if (focusDistanceValue) focusDistanceValue.textContent = Math.round(focusValue);
+    } else if (focusDistanceSlider) {
+      focusValue = parseFloat(focusDistanceSlider.value);
+    }
+    bokehPass.materialBokeh.uniforms["focus"].value = focusValue;
+    if (dofApertureSlider) bokehPass.materialBokeh.uniforms["aperture"].value = parseFloat(dofApertureSlider.value) * 0.00001;
+  }
+  if (dofToggle) dofToggle.addEventListener("change", updateDOF);
+  if (dofFocusSlider) dofFocusSlider.addEventListener("input", updateDOF);
+  if (dofApertureSlider) dofApertureSlider.addEventListener("input", updateDOF);
+  if (focusDistanceSlider) {
+    focusDistanceSlider.addEventListener("input", () => {
+      if (focusDistanceValue) focusDistanceValue.textContent = focusDistanceSlider.value;
+      updateDOF();
+    });
+  }
+  if (autoFocusCheckbox) autoFocusCheckbox.addEventListener("change", updateDOF);
+  updateDOF();
 }
 
 export { setupUI };

@@ -20,6 +20,7 @@ function createSlider({ labelText, inputId, min, max, step, value, valueId }) {
   const input = document.createElement("input");
   input.type = "range";
   input.id = inputId;
+  input.className = "slider";
   input.min = min;
   input.max = max;
   input.step = step;
@@ -124,6 +125,7 @@ function createBladeControls(settings) {
       max: "1",
       step: "0.1",
       value: settings.emissionIntensity,
+      valueId: "emission-intensity-value",
     })
   );
 
@@ -144,34 +146,40 @@ function createSceneControls(settings) {
   sceneHeader.textContent = "Scene Controls";
   sceneControls.appendChild(sceneHeader);
 
+  // Min Zoom (Near)
   sceneControls.appendChild(
-    createInput({
+    createSlider({
       labelText: "Min Zoom (Near):",
       inputId: "zoom-min-input",
       min: "1",
       max: "350",
       step: "1",
       value: settings.zoomMin,
+      valueId: "zoom-min-value",
     })
   );
+  // Max Zoom (Far)
   sceneControls.appendChild(
-    createInput({
+    createSlider({
       labelText: "Max Zoom (Far):",
       inputId: "zoom-max-input",
       min: "10",
       max: "1000",
       step: "1",
       value: settings.zoomMax,
+      valueId: "zoom-max-value",
     })
   );
+  // Zoom Speed
   sceneControls.appendChild(
-    createInput({
+    createSlider({
       labelText: "Zoom Speed:",
       inputId: "zoom-speed-input",
       min: "0.1",
       max: "100",
       step: "1",
       value: settings.zoomSpeed,
+      valueId: "zoom-speed-value",
     })
   );
 
@@ -205,6 +213,164 @@ function createDragControls(settings) {
   );
 
   fragment.appendChild(dragControls);
+  return fragment;
+}
+
+/**
+ * Creates the photo mode controls UI section as a DocumentFragment.
+ * @param {Object} settings - The settings object containing default values.
+ * @returns {DocumentFragment} The fragment containing the photo mode controls section.
+ */
+function createPhotoModeControls(settings) {
+  const fragment = document.createDocumentFragment();
+  const photoControls = document.createElement("div");
+  photoControls.className = "photo-mode-controls";
+  const photoHeader = document.createElement("h3");
+  photoHeader.textContent = "Photo Mode";
+  photoControls.appendChild(photoHeader);
+
+  // Resolution
+  const resRow = document.createElement("div");
+  const resLabel = document.createElement("label");
+  resLabel.setAttribute("for", "photo-resolution-select");
+  resLabel.textContent = "Resolution:";
+  resRow.appendChild(resLabel);
+  const resSelect = document.createElement("select");
+  resSelect.id = "photo-resolution-select";
+  const resolutions = [
+    ["1920x1080 (Full HD)", [1920, 1080]],
+    ["1280x720 (HD)", [1280, 720]],
+    ["3840x2160 (4K)", [3840, 2160]],
+    ["Current Canvas", []],
+  ];
+  resolutions.forEach(([label, value]) => {
+    const opt = document.createElement("option");
+    opt.value = value.length ? value.join(",") : "";
+    opt.textContent = label;
+    if (settings.photoMode.resolution[0] === value[0] && settings.photoMode.resolution[1] === value[1]) opt.selected = true;
+    resSelect.appendChild(opt);
+  });
+  resRow.appendChild(resSelect);
+  photoControls.appendChild(resRow);
+
+  // Image Quality
+  photoControls.appendChild(
+    createSlider({
+      labelText: "Image Quality:",
+      inputId: "photo-quality-slider",
+      min: "0.1",
+      max: "1.0",
+      step: "0.01",
+      value: settings.photoMode.imageQuality,
+      valueId: "photo-quality-value",
+    })
+  );
+
+  // Background color
+  const bgRow = document.createElement("div");
+  const bgLabel = document.createElement("label");
+  bgLabel.setAttribute("for", "photo-bg-color");
+  bgLabel.textContent = "Background:";
+  bgRow.appendChild(bgLabel);
+  const bgInput = document.createElement("input");
+  bgInput.type = "color";
+  bgInput.id = "photo-bg-color";
+  bgInput.value = settings.photoMode.background;
+  bgRow.appendChild(bgInput);
+  photoControls.appendChild(bgRow);
+
+  // Depth of Field
+  const dofRow = document.createElement("div");
+  const dofLabel = document.createElement("label");
+  dofLabel.setAttribute("for", "photo-dof-toggle");
+  dofLabel.textContent = "Depth of Field:";
+  dofRow.appendChild(dofLabel);
+  const dofToggle = document.createElement("input");
+  dofToggle.type = "checkbox";
+  dofToggle.id = "photo-dof-toggle";
+  dofToggle.checked = settings.photoMode.dofEnabled;
+  dofRow.appendChild(dofToggle);
+  photoControls.appendChild(dofRow);
+
+  // DOF Focus and Aperture (shown only if enabled)
+  const dofFocusFrag = createSlider({
+    labelText: "DOF Focus:",
+    inputId: "photo-dof-focus-slider",
+    min: "10",
+    max: "500",
+    step: "1",
+    value: settings.photoMode.dofFocus,
+    valueId: "photo-dof-focus-value",
+  });
+  const dofFocusRow = dofFocusFrag.firstChild;
+  dofFocusRow.className = "slider-row";
+  dofFocusRow.style.display = dofToggle.checked ? "flex" : "none";
+  photoControls.appendChild(dofFocusRow);
+
+  const dofApertureFrag = createSlider({
+    labelText: "DOF Aperture:",
+    inputId: "photo-dof-aperture-slider",
+    min: "0.5",
+    max: "16",
+    step: "0.1",
+    value: settings.photoMode.dofAperture,
+    valueId: "photo-dof-aperture-value",
+  });
+  const dofApertureRow = dofApertureFrag.firstChild;
+  dofApertureRow.className = "slider-row";
+  dofApertureRow.style.display = dofToggle.checked ? "flex" : "none";
+  photoControls.appendChild(dofApertureRow);
+
+  // Focus Distance (manual)
+  const focusDistanceFrag = createSlider({
+    labelText: "Focus Distance:",
+    inputId: "photo-dof-focus-distance-slider",
+    min: "1",
+    max: "500",
+    step: "1",
+    value: settings.photoMode.dofFocus,
+    valueId: "photo-dof-focus-distance-value",
+  });
+  const focusDistanceRow = focusDistanceFrag.firstChild;
+  focusDistanceRow.className = "slider-row";
+  photoControls.appendChild(focusDistanceRow);
+
+  // Auto Focus Saber checkbox
+  const autoFocusRow = document.createElement("div");
+  autoFocusRow.className = "slider-row";
+  const autoFocusLabel = document.createElement("label");
+  autoFocusLabel.setAttribute("for", "photo-dof-auto-focus");
+  autoFocusLabel.textContent = "Auto Focus Saber:";
+  autoFocusRow.appendChild(autoFocusLabel);
+  const autoFocusCheckbox = document.createElement("input");
+  autoFocusCheckbox.type = "checkbox";
+  autoFocusCheckbox.id = "photo-dof-auto-focus";
+  autoFocusRow.appendChild(autoFocusCheckbox);
+  photoControls.appendChild(autoFocusRow);
+
+  dofToggle.addEventListener("change", () => {
+    dofFocusRow.style.display = dofToggle.checked ? "flex" : "none";
+    dofApertureRow.style.display = dofToggle.checked ? "flex" : "none";
+  });
+
+  // Take Photo Button
+  const btnRow = document.createElement("div");
+  btnRow.style.justifyContent = "flex-end";
+  btnRow.style.display = "flex";
+  const photoBtn = document.createElement("button");
+  photoBtn.id = "photo-take-btn";
+  photoBtn.title = "Take Photo";
+  photoBtn.innerHTML =
+    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"/><path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/></svg>';
+  photoBtn.style.background = "#181c2a";
+  photoBtn.style.border = "1.5px solid #0ff";
+  photoBtn.style.borderRadius = "8px";
+  photoBtn.style.padding = "8px 16px";
+  photoBtn.style.cursor = "pointer";
+  btnRow.appendChild(photoBtn);
+  photoControls.appendChild(btnRow);
+
+  fragment.appendChild(photoControls);
   return fragment;
 }
 
@@ -311,6 +477,7 @@ async function loadInterface() {
   controls.appendChild(createBladeControls(settings));
   controls.appendChild(createSceneControls(settings));
   controls.appendChild(createDragControls(settings));
+  controls.appendChild(createPhotoModeControls(settings));
   controls.appendChild(createLightingControls(settings));
 
   fragment.appendChild(controls);
