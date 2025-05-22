@@ -1,0 +1,9 @@
+{
+  "emissionIntensity": 0.8,
+  "bloomStrength": 0.4,
+  "bloomThreshold": 0.1,
+  "bloomRadius": 0.75,
+  "bloomExposure": 1,
+  "ambientLight": 1.35,
+  "directionalLight": 1.8
+}

@@ -1,0 +1,91 @@
+@import url("variables.css");
+
+:root {
+  --switch-bg: #23242a;
+  --switch-radius: 14px;
+  --switch-shadow-light: #3a3a44;
+  --switch-shadow-dark: #10121a;
+  --switch-shadow-hover: #2e3a4a;
+  --toggle-bg: linear-gradient(145deg, #4a5568 60%, #23243a 100%);
+  --toggle-bg-on: linear-gradient(145deg, #7a8ca0 60%, #23243a 100%);
+  --toggle-radius: 11px;
+  --toggle-shadow-light: #5a6a7a;
+  --toggle-shadow-dark: #23243a;
+  --toggle-shadow-on: #7a8ca0;
+  --led-off: grey;
+  --led-on: radial-gradient(circle, #fff 60%, var(--blade-color) 100%);
+  --led-shadow-off: 0 0 5px 1.2px rgba(0, 0, 0, 0.5);
+  --led-shadow-on: 0 0 4px 1.5px white, 0 0 8px 3px var(--blade-color), 0 0 14px 6px var(--blade-color), 0 0 20px 10px rgba(0, 255, 255, 0.18);
+}
+
+/* Scaled-down Uiverse.io by chase2k25 metallic toggle with LED */
+.switch-container {
+  position: relative;
+  width: 72px;
+  height: 28px;
+  background: var(--switch-bg);
+  border-radius: var(--switch-radius);
+  box-shadow: inset -4px -4px 8px var(--switch-shadow-light), inset 4px 4px 8px var(--switch-shadow-dark);
+}
+
+/* Hidden Checkbox */
+.toggle-checkbox {
+  display: none;
+}
+
+/* Switch Label (Interactive Area) */
+.switch {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-50%);
+  border-radius: var(--switch-radius);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Toggle Button */
+.toggle {
+  position: absolute;
+  width: 38px;
+  height: 22px;
+  background: var(--toggle-bg);
+  border-radius: var(--toggle-radius);
+  top: 3px;
+  left: 3px;
+  box-shadow: -2px -2px 4px var(--toggle-shadow-light), 2px 2px 4px var(--toggle-shadow-dark);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 5px;
+}
+
+/* LED Light */
+.led {
+  width: 5px;
+  height: 5px;
+  background: var(--led-off);
+  border-radius: 50%;
+  box-shadow: var(--led-shadow-off);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Active State for Toggle (ON) */
+.toggle-checkbox:checked + .switch .toggle {
+  left: 31px;
+  background: var(--toggle-bg-on);
+  box-shadow: -2px -2px 4px var(--toggle-shadow-light), 2px 2px 4px var(--toggle-shadow-on);
+}
+
+.toggle-checkbox:checked + .switch .led {
+  background: var(--led-on);
+  box-shadow: var(--led-shadow-on);
+}
+
+/* Hover Effect */
+.switch:hover .toggle {
+  box-shadow: -2px -2px 6px var(--toggle-shadow-light), 2px 2px 6px var(--switch-shadow-hover);
+}

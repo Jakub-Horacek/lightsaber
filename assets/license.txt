@@ -1,0 +1,11 @@
+Model Information:
+* title:	Obi-Wan's Lightsaber (Jedi Master) - Star Wars
+* source:	https://sketchfab.com/3d-models/obi-wans-lightsaber-jedi-master-star-wars-d97db6d7694a4dd4819dd21cae88358b
+* author:	Quiznos323 (https://sketchfab.com/quiznos323)
+
+Model License:
+* license type:	CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Obi-Wan's Lightsaber (Jedi Master) - Star Wars" (https://sketchfab.com/3d-models/obi-wans-lightsaber-jedi-master-star-wars-d97db6d7694a4dd4819dd21cae88358b) by Quiznos323 (https://sketchfab.com/quiznos323) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
