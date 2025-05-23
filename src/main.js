@@ -17,8 +17,8 @@ function animate() {
 window.addEventListener("DOMContentLoaded", async () => {
   await loadInterface();
   Promise.all([
-    fetch("assets/initial-scene-settings.json").then((r) => r.json()),
-    fetch("assets/saber-initial-state.json").then((r) => r.json()),
+    fetch("/config/initial-scene-settings.json").then((r) => r.json()),
+    fetch("/config/saber-initial-state.json").then((r) => r.json()),
   ]).then(([sceneSettings, saberSettings]) => {
     applySceneSettings(sceneSettings);
     setupUI();

@@ -477,7 +477,7 @@ function createLightingControls(settings) {
  * @returns {Promise<void>} Resolves when the interface is loaded.
  */
 async function loadInterface() {
-  const response = await fetch("assets/initial-scene-settings.json");
+  const response = await fetch("/config/initial-scene-settings.json");
   const settings = await response.json();
   // Patch photoMode.resolution if set to window size placeholders
   if (
