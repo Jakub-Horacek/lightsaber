@@ -1,24 +1,40 @@
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass.js";
 import * as THREE from "three";
 import { scene, camera, renderer } from "./scene.js";
 
-const bloomParams = {
+// Default values in case config is not loaded yet
+let bloomParams = {
   exposure: 1,
-  bloomStrength: 2.2,
-  bloomThreshold: 0,
-  bloomRadius: 0.25,
+  bloomStrength: 0.5,
+  bloomThreshold: 1,
+  bloomRadius: 0.75,
 };
 
-const bokehParams = {
-  focus: 100.0,
-  aperture: 0.025,
-  maxblur: 1.0,
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
+// Load config/initial-scene-settings.json and update bloomParams
+(async () => {
+  try {
+    const response = await fetch("/config/initial-scene-settings.json");
+    if (response.ok) {
+      const config = await response.json();
+      bloomParams = {
+        exposure: config.bloomExposure ?? 1,
+        bloomStrength: config.bloomStrength ?? 0.5,
+        bloomThreshold: config.bloomThreshold ?? 1,
+        bloomRadius: config.bloomRadius ?? 0.75,
+      };
+      // Update bloomPass if already created
+      if (window.bloomPass) {
+        window.bloomPass.strength = bloomParams.bloomStrength;
+        window.bloomPass.threshold = bloomParams.bloomThreshold;
+        window.bloomPass.radius = bloomParams.bloomRadius;
+      }
+    }
+  } catch (e) {
+    // Use defaults if fetch fails
+  }
+})();
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
@@ -30,15 +46,7 @@ const bloomPass = new UnrealBloomPass(
   bloomParams.bloomRadius,
   bloomParams.bloomThreshold
 );
+window.bloomPass = bloomPass;
 composer.addPass(bloomPass);
 
-const bokehPass = new BokehPass(scene, camera, {
-  focus: bokehParams.focus,
-  aperture: bokehParams.aperture,
-  maxblur: bokehParams.maxblur,
-  width: bokehParams.width,
-  height: bokehParams.height,
-});
-composer.addPass(bokehPass);
-
-export { composer, bloomPass, bloomParams, renderPass, bokehPass, bokehParams };
+export { composer, bloomPass, bloomParams, renderPass };

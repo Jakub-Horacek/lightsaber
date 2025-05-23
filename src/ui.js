@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { bloomPass, bokehPass } from "./postprocessing.js";
+import { bloomPass } from "./postprocessing.js";
 import { renderer, ambientLight, directionalLight, scene } from "./scene.js";
 import { saberScene } from "./modelLoader.js";
 import { toggleBlade } from "./saber.js";
@@ -27,43 +27,6 @@ function setupUI() {
       if (saberScene) {
         toggleBlade(saberScene, bladeOn, 400);
       }
-    });
-  }
-
-  // Emission intensity slider
-  const slider = document.getElementById("emission-intensity-slider");
-  let sliderValue = document.getElementById("emission-intensity-value");
-  if (!sliderValue && slider) {
-    sliderValue = document.createElement("span");
-    sliderValue.id = "emission-intensity-value";
-    sliderValue.style.marginLeft = "8px";
-    slider.after(sliderValue);
-  }
-  if (slider && sliderValue) {
-    sliderValue.textContent = slider.value;
-    slider.addEventListener("input", () => {
-      const val = parseFloat(slider.value);
-      sliderValue.textContent = val;
-      if (!saberScene) return;
-      saberScene.traverse((child) => {
-        if (child.isMesh && child.name && child.name.includes("Blade")) {
-          const mat = child.material;
-          if (mat) {
-            if (mat.emissive) {
-              mat.emissive.setRGB(0.1, 0.1, 1.0);
-            }
-            if (typeof mat.emissiveIntensity === "number") {
-              mat.emissiveIntensity = val * 10;
-            }
-            if (typeof mat.emissiveStrength === "number") {
-              mat.emissiveStrength = val * 10;
-            }
-            if (mat.emissiveFactor) {
-              mat.emissiveFactor = [0.1 * val, 0.1 * val, 1.0 * val];
-            }
-          }
-        }
-      });
     });
   }
 
@@ -144,44 +107,41 @@ function setupUI() {
       photoQualityValue.textContent = photoQualitySlider.value;
     });
   }
-  const dofToggle = document.getElementById("photo-dof-toggle");
-  const dofFocusSlider = document.getElementById("photo-dof-focus-slider");
-  const dofApertureSlider = document.getElementById("photo-dof-aperture-slider");
-  const focusDistanceSlider = document.getElementById("photo-dof-focus-distance-slider");
-  const focusDistanceValue = document.getElementById("photo-dof-focus-distance-value");
-  const autoFocusCheckbox = document.getElementById("photo-dof-auto-focus");
-  function updateDOF() {
-    if (!dofToggle) return;
-    bokehPass.enabled = dofToggle.checked;
-    // Focus distance: auto or manual
-    let focusValue = 100;
-    if (autoFocusCheckbox && autoFocusCheckbox.checked && window.saberScene && window.camera) {
-      focusValue = getSaberFocusDistance(window.camera, window.saberScene);
-      if (focusDistanceSlider) focusDistanceSlider.value = focusValue;
-      if (focusDistanceValue) focusDistanceValue.textContent = Math.round(focusValue);
-    } else if (focusDistanceSlider) {
-      focusValue = parseFloat(focusDistanceSlider.value);
-    }
-    bokehPass.materialBokeh.uniforms["focus"].value = focusValue;
-    if (dofApertureSlider) bokehPass.materialBokeh.uniforms["aperture"].value = parseFloat(dofApertureSlider.value) * 0.00001;
-  }
-  if (dofToggle) dofToggle.addEventListener("change", updateDOF);
-  if (dofFocusSlider) dofFocusSlider.addEventListener("input", updateDOF);
-  if (dofApertureSlider) dofApertureSlider.addEventListener("input", updateDOF);
-  if (focusDistanceSlider) {
-    focusDistanceSlider.addEventListener("input", () => {
-      if (focusDistanceValue) focusDistanceValue.textContent = focusDistanceSlider.value;
-      updateDOF();
-    });
-  }
-  if (autoFocusCheckbox) autoFocusCheckbox.addEventListener("change", updateDOF);
-  updateDOF();
 
   // Background color live update
   const bgInput = document.getElementById("photo-bg-color");
   if (bgInput) {
     bgInput.addEventListener("input", () => {
       scene.background = new THREE.Color(bgInput.value);
+    });
+  }
+
+  // Emission intensity slider
+  const slider = document.getElementById("emission-intensity-slider");
+  let sliderValue = document.getElementById("emission-intensity-value");
+  if (!sliderValue && slider) {
+    sliderValue = document.createElement("span");
+    sliderValue.id = "emission-intensity-value";
+    sliderValue.style.marginLeft = "8px";
+    slider.after(sliderValue);
+  }
+  if (slider && sliderValue) {
+    sliderValue.textContent = slider.value;
+    slider.addEventListener("input", () => {
+      const val = parseFloat(slider.value);
+      sliderValue.textContent = val;
+      if (!saberScene) return;
+      saberScene.traverse((child) => {
+        if (child.isMesh && (child.name === "Blade" || child.name === "Blade_LightsaberBlade_Blue_0")) {
+          const mat = child.material;
+          if (mat && mat.emissive) {
+            mat.emissive.setRGB(0.1, 0.1, 1.0);
+          }
+          if (mat && typeof mat.emissiveIntensity === "number") {
+            mat.emissiveIntensity = val * 10;
+          }
+        }
+      });
     });
   }
 }

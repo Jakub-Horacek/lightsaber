@@ -23,13 +23,13 @@ function applySceneSettings(sceneSettings) {
     const valueSpan = document.getElementById(id.replace("slider", "value"));
     if (valueSpan) valueSpan.textContent = value;
   };
-  setSlider("emission-intensity-slider", sceneSettings.emissionIntensity);
   setSlider("bloom-strength-slider", sceneSettings.bloomStrength);
   setSlider("bloom-threshold-slider", sceneSettings.bloomThreshold);
   setSlider("bloom-radius-slider", sceneSettings.bloomRadius);
   setSlider("bloom-exposure-slider", sceneSettings.bloomExposure);
   setSlider("ambient-light-slider", sceneSettings.ambientLight);
   setSlider("directional-light-slider", sceneSettings.directionalLight);
+  setSlider("emission-intensity-slider", sceneSettings.emissionIntensity);
 }
 
 export { applySceneSettings };

@@ -1,5 +1,5 @@
 import { camera, renderer, scene } from "./scene.js";
-import { composer, bokehPass } from "./postprocessing.js";
+import { composer } from "./postprocessing.js";
 import * as THREE from "three";
 
 let minZ = 10;
@@ -113,21 +113,6 @@ function setupPhotoMode(renderer, scene, camera) {
     let height = renderer.domElement.height * scale;
     const quality = parseFloat(document.getElementById("photo-quality-slider")?.value || "0.92");
     const bgColor = document.getElementById("photo-bg-color")?.value || "#000000";
-    // DOF settings
-    const dofEnabled = document.getElementById("photo-dof-toggle")?.checked;
-    const dofAperture = parseFloat(document.getElementById("photo-dof-aperture-slider")?.value || "0.025");
-    const autoFocus = document.getElementById("photo-dof-auto-focus")?.checked;
-    let dofFocus = 100;
-    if (autoFocus && window.saberScene && window.camera) {
-      // Get world position of saber and camera
-      const saberPos = new THREE.Vector3();
-      window.saberScene.getWorldPosition(saberPos);
-      const camPos = new THREE.Vector3();
-      window.camera.getWorldPosition(camPos);
-      dofFocus = camPos.distanceTo(saberPos);
-    } else {
-      dofFocus = parseFloat(document.getElementById("photo-dof-focus-distance-slider")?.value || "100");
-    }
     // Save current renderer state
     const oldSize = renderer.getSize(new THREE.Vector2());
     const oldBg = scene.background;
@@ -135,10 +120,6 @@ function setupPhotoMode(renderer, scene, camera) {
     renderer.setSize(width, height, false);
     scene.background = new THREE.Color(bgColor);
     composer.setSize(width, height);
-    // Set DOF for photo
-    bokehPass.enabled = dofEnabled;
-    bokehPass.materialBokeh.uniforms["focus"].value = dofFocus;
-    bokehPass.materialBokeh.uniforms["aperture"].value = dofAperture * 0.00001;
     composer.render();
     // Get image
     const dataUrl = renderer.domElement.toDataURL("image/jpeg", quality);

@@ -79,6 +79,7 @@ function createBladeControls(settings) {
 
   const lightsaberHeader = document.createElement("h3");
   lightsaberHeader.textContent = "Lightsaber Controls";
+  lightsaberHeader.style.marginBottom = "22px";
   lightsaberControls.appendChild(lightsaberHeader);
 
   // Blade toggle
@@ -114,20 +115,20 @@ function createBladeControls(settings) {
   switchLabel.appendChild(toggleDiv);
   switchContainer.appendChild(switchLabel);
   bladeRow.appendChild(switchContainer);
-  lightsaberControls.appendChild(bladeRow);
 
   // Emission Intensity
-  lightsaberControls.appendChild(
-    createSlider({
-      labelText: "Emission Intensity:",
-      inputId: "emission-intensity-slider",
-      min: "0",
-      max: "1",
-      step: "0.1",
-      value: settings.emissionIntensity,
-      valueId: "emission-intensity-value",
-    })
-  );
+  const emissionSliderFrag = createSlider({
+    labelText: "Emission Intensity:",
+    inputId: "emission-intensity-slider",
+    min: "0",
+    max: "1",
+    step: "0.1",
+    value: settings.emissionIntensity,
+    valueId: "emission-intensity-value",
+  });
+  lightsaberControls.appendChild(emissionSliderFrag);
+
+  lightsaberControls.appendChild(bladeRow);
 
   fragment.appendChild(lightsaberControls);
   return fragment;
@@ -277,88 +278,6 @@ function createPhotoModeControls(settings) {
   bgInput.value = settings.photoMode.background;
   bgRow.appendChild(bgInput);
   photoControls.appendChild(bgRow);
-
-  // Depth of Field
-  const dofRow = document.createElement("div");
-  const dofLabel = document.createElement("label");
-  dofLabel.setAttribute("for", "photo-dof-toggle");
-  dofLabel.textContent = "Depth of Field:";
-  dofRow.appendChild(dofLabel);
-  const dofToggle = document.createElement("input");
-  dofToggle.type = "checkbox";
-  dofToggle.id = "photo-dof-toggle";
-  dofToggle.checked = settings.photoMode.dofEnabled;
-  dofRow.appendChild(dofToggle);
-  photoControls.appendChild(dofRow);
-
-  // DOF Focus and Aperture (shown only if enabled)
-  const dofFocusFrag = createSlider({
-    labelText: "DOF Focus:",
-    inputId: "photo-dof-focus-slider",
-    min: "10",
-    max: "500",
-    step: "1",
-    value: settings.photoMode.dofFocus,
-    valueId: "photo-dof-focus-value",
-  });
-  const dofFocusRow = dofFocusFrag.firstChild;
-  dofFocusRow.className = "slider-row";
-  dofFocusRow.style.display = "none";
-  photoControls.appendChild(dofFocusRow);
-
-  const dofApertureFrag = createSlider({
-    labelText: "DOF Aperture:",
-    inputId: "photo-dof-aperture-slider",
-    min: "0.5",
-    max: "16",
-    step: "0.1",
-    value: settings.photoMode.dofAperture,
-    valueId: "photo-dof-aperture-value",
-  });
-  const dofApertureRow = dofApertureFrag.firstChild;
-  dofApertureRow.className = "slider-row";
-  dofApertureRow.style.display = "none";
-  photoControls.appendChild(dofApertureRow);
-
-  // Focus Distance (manual)
-  const focusDistanceFrag = createSlider({
-    labelText: "Focus Distance:",
-    inputId: "photo-dof-focus-distance-slider",
-    min: "1",
-    max: "500",
-    step: "1",
-    value: settings.photoMode.dofFocus,
-    valueId: "photo-dof-focus-distance-value",
-  });
-  const focusDistanceRow = focusDistanceFrag.firstChild;
-  focusDistanceRow.className = "slider-row";
-  focusDistanceRow.style.display = "none";
-  photoControls.appendChild(focusDistanceRow);
-
-  // Auto Focus Saber checkbox
-  const autoFocusRow = document.createElement("div");
-  autoFocusRow.className = "slider-row";
-  const autoFocusLabel = document.createElement("label");
-  autoFocusLabel.setAttribute("for", "photo-dof-auto-focus");
-  autoFocusLabel.textContent = "Auto Focus Saber:";
-  autoFocusRow.appendChild(autoFocusLabel);
-  const autoFocusCheckbox = document.createElement("input");
-  autoFocusCheckbox.type = "checkbox";
-  autoFocusCheckbox.id = "photo-dof-auto-focus";
-  autoFocusRow.appendChild(autoFocusCheckbox);
-  autoFocusRow.style.display = "none";
-  photoControls.appendChild(autoFocusRow);
-
-  function updateDOFSettingsVisibility() {
-    const show = dofToggle.checked;
-    dofFocusRow.style.display = show ? "flex" : "none";
-    dofApertureRow.style.display = show ? "flex" : "none";
-    focusDistanceRow.style.display = show ? "flex" : "none";
-    autoFocusRow.style.display = show ? "flex" : "none";
-  }
-  updateDOFSettingsVisibility();
-  dofToggle.addEventListener("change", updateDOFSettingsVisibility);
-  dofToggle.addEventListener("input", updateDOFSettingsVisibility);
 
   // Take Photo Button
   const btnRow = document.createElement("div");
