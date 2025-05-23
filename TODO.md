@@ -1,2 +1,0 @@
-- fix deformated images
-- fix slider controls

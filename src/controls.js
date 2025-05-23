@@ -10,6 +10,9 @@ let lastX = 0;
 let lastY = 0;
 let dragRotationSpeed = 0.01;
 
+// Autorotate state
+window.autorotate = true;
+
 /**
  * @description Set the default zoom settings
  * @param {Object} params
@@ -86,6 +89,10 @@ function onPointerDown(event) {
   lastY = event.clientY;
   setDraggingCursor(true);
   updateDragSettings();
+  // Disable autorotate and uncheck the box
+  window.autorotate = false;
+  const autoCheckbox = document.getElementById("autorotate-checkbox");
+  if (autoCheckbox) autoCheckbox.checked = false;
 }
 
 /**
@@ -229,6 +236,16 @@ function setupControls() {
   const dragSpeedInput = document.getElementById("drag-rotation-speed-slider");
   if (dragSpeedInput) dragSpeedInput.addEventListener("input", updateDragSettings);
   updateDragSettings();
+
+  // Autorotate checkbox event
+  const autoCheckbox = document.getElementById("autorotate-checkbox");
+  if (autoCheckbox) {
+    autoCheckbox.checked = true;
+    window.autorotate = true;
+    autoCheckbox.addEventListener("change", (e) => {
+      window.autorotate = !!e.target.checked;
+    });
+  }
 
   setTimeout(() => setupPhotoMode(renderer, scene, camera), 0);
 }

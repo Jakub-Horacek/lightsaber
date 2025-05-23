@@ -11,8 +11,15 @@ import { loadInterface } from "./interfaceLoader.js";
  */
 function animate() {
   requestAnimationFrame(animate);
-  if (scene.children[0]) {
-    scene.children[0].rotation.y += 0.01;
+  const saber = window.saberScene || (window.scene && window.scene.children[0]);
+  if (saber) {
+    if (window.autorotate) {
+      // Cinematic autorotation: slow, smooth, multi-axis
+      const time = performance.now() * 0.001;
+      saber.rotation.y += 0.004;
+      saber.rotation.x += Math.sin(time) * 0.0008;
+    }
+    // else: manual drag handled in controls.js
   }
   composer.render();
 }

@@ -198,6 +198,27 @@ function createDragControls(settings) {
   dragHeader.textContent = "Drag & Rotate Controls";
   dragControls.appendChild(dragHeader);
 
+  // Add Cinematic Rotate (Autorotate) Checkbox
+  const autoRow = document.createElement("div");
+  autoRow.style.display = "flex";
+  autoRow.style.alignItems = "center";
+  autoRow.style.gap = "12px";
+  autoRow.style.marginBottom = "10px";
+
+  const autoLabel = document.createElement("label");
+  autoLabel.setAttribute("for", "autorotate-checkbox");
+  autoLabel.textContent = "Cinematic Rotate";
+  autoLabel.style.fontWeight = "bold";
+  autoRow.appendChild(autoLabel);
+
+  const autoCheckbox = document.createElement("input");
+  autoCheckbox.type = "checkbox";
+  autoCheckbox.id = "autorotate-checkbox";
+  autoCheckbox.checked = true;
+  autoRow.appendChild(autoCheckbox);
+
+  dragControls.appendChild(autoRow);
+
   dragControls.appendChild(
     createSlider({
       labelText: "Drag Rotation Speed:",
