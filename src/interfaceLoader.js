@@ -229,28 +229,22 @@ function createPhotoModeControls(settings) {
   photoHeader.textContent = "Photo Mode";
   photoControls.appendChild(photoHeader);
 
-  // Resolution
+  // Resolution (Quality Label Only)
   const resRow = document.createElement("div");
   const resLabel = document.createElement("label");
-  resLabel.setAttribute("for", "photo-resolution-select");
-  resLabel.textContent = "Resolution:";
+  resLabel.setAttribute("for", "photo-quality-select");
+  resLabel.textContent = "Photo Quality:";
   resRow.appendChild(resLabel);
   const resSelect = document.createElement("select");
-  resSelect.id = "photo-resolution-select";
-  const resolutions = [
-    ["1920x1080 (Full HD)", [1920, 1080]],
-    ["1280x720 (HD)", [1280, 720]],
-    ["3840x2160 (4K)", [3840, 2160]],
-    ["Current Canvas", []],
-  ];
-  resolutions.forEach(([label, value]) => {
+  resSelect.id = "photo-quality-select";
+  // Only quality labels, not actual pixel values
+  const qualityLabels = ["8K (Ultra)", "4K (High)", "2K (Medium)", "FHD (Standard)", "HD (Basic)"];
+  qualityLabels.forEach((label) => {
     const opt = document.createElement("option");
-    opt.value = value.length ? value.join(",") : "";
+    opt.value = label;
     opt.textContent = label;
-    if (
-      (value.length === 0 && settings.photoMode.resolution[0] === window.innerWidth && settings.photoMode.resolution[1] === window.innerHeight) ||
-      (settings.photoMode.resolution[0] === value[0] && settings.photoMode.resolution[1] === value[1])
-    ) {
+    // Optionally, select the current or default
+    if (settings.photoMode.qualityLabel === label) {
       opt.selected = true;
     }
     resSelect.appendChild(opt);

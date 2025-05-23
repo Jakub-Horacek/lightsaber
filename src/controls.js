@@ -98,16 +98,19 @@ function setupPhotoMode(renderer, scene, camera) {
   if (!btn) return;
   btn.addEventListener("click", () => {
     // Get settings
-    const resSel = document.getElementById("photo-resolution-select");
-    let width = renderer.domElement.width;
-    let height = renderer.domElement.height;
-    if (resSel && resSel.value) {
-      const [w, h] = resSel.value.split(",").map(Number);
-      if (w && h) {
-        width = w;
-        height = h;
-      }
+    const qualitySel = document.getElementById("photo-quality-select");
+    let scale = 1.0;
+    if (qualitySel) {
+      const label = qualitySel.value;
+      if (label.includes("8K")) scale = 4.0;
+      else if (label.includes("4K")) scale = 2.0;
+      else if (label.includes("2K")) scale = 1.5;
+      else if (label.includes("FHD")) scale = 1.0;
+      else if (label.includes("HD")) scale = 0.5;
     }
+    // Always use canvas aspect ratio
+    let width = renderer.domElement.width * scale;
+    let height = renderer.domElement.height * scale;
     const quality = parseFloat(document.getElementById("photo-quality-slider")?.value || "0.92");
     const bgColor = document.getElementById("photo-bg-color")?.value || "#000000";
     // DOF settings
@@ -139,7 +142,23 @@ function setupPhotoMode(renderer, scene, camera) {
     composer.render();
     // Get image
     const dataUrl = renderer.domElement.toDataURL("image/jpeg", quality);
-    triggerDownload(dataUrl, "lightsaber-photo.jpg");
+    // Generate a unique filename with quality and timestamp
+    let qualityTag = "STANDARD";
+    if (qualitySel) {
+      const label = qualitySel.value;
+      if (label.includes("8K")) qualityTag = "ULTRA";
+      else if (label.includes("4K")) qualityTag = "HIGH";
+      else if (label.includes("2K")) qualityTag = "MEDIUM";
+      else if (label.includes("FHD")) qualityTag = "STANDARD";
+      else if (label.includes("HD")) qualityTag = "BASIC";
+    }
+    const now = new Date();
+    const pad = (n, l = 2) => n.toString().padStart(l, "0");
+    const timestamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(
+      now.getSeconds()
+    )}${pad(now.getMilliseconds(), 3)}`;
+    const filename = `SABER-RENDER-${qualityTag}-${timestamp}.jpg`;
+    triggerDownload(dataUrl, filename);
     // Restore
     renderer.setSize(oldSize.x, oldSize.y, false);
     composer.setSize(oldSize.x, oldSize.y);
