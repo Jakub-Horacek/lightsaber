@@ -32,6 +32,10 @@ function createSlider({ labelText, inputId, min, max, step, value, valueId }) {
     span.className = "slider-value";
     span.textContent = value;
     row.appendChild(span);
+    // Add event listener to update the value display in real time
+    input.addEventListener("input", () => {
+      span.textContent = input.value;
+    });
   }
   fragment.appendChild(row);
   return fragment;
