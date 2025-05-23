@@ -1,5 +1,5 @@
 /**
- * Creates a slider control row as a DocumentFragment.
+ * @description Creates a slider control row as a DocumentFragment.
  * @param {Object} options - Options for the slider.
  * @param {string} options.labelText - The label text for the slider.
  * @param {string} options.inputId - The id for the input element.
@@ -38,7 +38,7 @@ function createSlider({ labelText, inputId, min, max, step, value, valueId }) {
 }
 
 /**
- * Creates a number input control row as a DocumentFragment.
+ * @description Creates a number input control row as a DocumentFragment.
  * @param {Object} options - Options for the input.
  * @param {string} options.labelText - The label text for the input.
  * @param {string} options.inputId - The id for the input element.
@@ -68,7 +68,7 @@ function createInput({ labelText, inputId, min, max, step, value }) {
 }
 
 /**
- * Creates the blade controls UI section as a DocumentFragment.
+ * @description Creates the blade controls UI section as a DocumentFragment.
  * @param {Object} settings - The settings object containing default values.
  * @returns {DocumentFragment} The fragment containing the blade controls section.
  */
@@ -82,7 +82,6 @@ function createBladeControls(settings) {
   lightsaberHeader.style.marginBottom = "22px";
   lightsaberControls.appendChild(lightsaberHeader);
 
-  // Blade toggle
   const bladeRow = document.createElement("div");
   bladeRow.style.display = "flex";
   bladeRow.style.alignItems = "center";
@@ -116,7 +115,6 @@ function createBladeControls(settings) {
   switchContainer.appendChild(switchLabel);
   bladeRow.appendChild(switchContainer);
 
-  // Emission Intensity
   const emissionSliderFrag = createSlider({
     labelText: "Emission Intensity:",
     inputId: "emission-intensity-slider",
@@ -135,7 +133,7 @@ function createBladeControls(settings) {
 }
 
 /**
- * Creates the scene controls UI section as a DocumentFragment.
+ * @description Creates the scene controls UI section as a DocumentFragment.
  * @param {Object} settings - The settings object containing default values.
  * @returns {DocumentFragment} The fragment containing the scene controls section.
  */
@@ -147,7 +145,6 @@ function createSceneControls(settings) {
   sceneHeader.textContent = "Scene Controls";
   sceneControls.appendChild(sceneHeader);
 
-  // Min Zoom (Near)
   sceneControls.appendChild(
     createSlider({
       labelText: "Min Zoom (Near):",
@@ -159,7 +156,7 @@ function createSceneControls(settings) {
       valueId: "zoom-min-value",
     })
   );
-  // Max Zoom (Far)
+
   sceneControls.appendChild(
     createSlider({
       labelText: "Max Zoom (Far):",
@@ -171,7 +168,7 @@ function createSceneControls(settings) {
       valueId: "zoom-max-value",
     })
   );
-  // Zoom Speed
+
   sceneControls.appendChild(
     createSlider({
       labelText: "Zoom Speed:",
@@ -189,7 +186,7 @@ function createSceneControls(settings) {
 }
 
 /**
- * Creates the drag/rotation controls UI section as a DocumentFragment.
+ * @description Creates the drag/rotation controls UI section as a DocumentFragment.
  * @param {Object} settings - The settings object containing default values.
  * @returns {DocumentFragment} The fragment containing the drag controls section.
  */
@@ -218,7 +215,7 @@ function createDragControls(settings) {
 }
 
 /**
- * Creates the photo mode controls UI section as a DocumentFragment.
+ * @description Creates the photo mode controls UI section as a DocumentFragment.
  * @param {Object} settings - The settings object containing default values.
  * @returns {DocumentFragment} The fragment containing the photo mode controls section.
  */
@@ -230,7 +227,6 @@ function createPhotoModeControls(settings) {
   photoHeader.textContent = "Photo Mode";
   photoControls.appendChild(photoHeader);
 
-  // Resolution (Quality Label Only)
   const resRow = document.createElement("div");
   const resLabel = document.createElement("label");
   resLabel.setAttribute("for", "photo-quality-select");
@@ -238,22 +234,23 @@ function createPhotoModeControls(settings) {
   resRow.appendChild(resLabel);
   const resSelect = document.createElement("select");
   resSelect.id = "photo-quality-select";
-  // Only quality labels, not actual pixel values
   const qualityLabels = ["8K (Ultra)", "4K (High)", "2K (Medium)", "FHD (Standard)", "HD (Basic)"];
+
   qualityLabels.forEach((label) => {
     const opt = document.createElement("option");
     opt.value = label;
     opt.textContent = label;
-    // Optionally, select the current or default
+
     if (settings.photoMode.qualityLabel === label) {
       opt.selected = true;
     }
+
     resSelect.appendChild(opt);
   });
+
   resRow.appendChild(resSelect);
   photoControls.appendChild(resRow);
 
-  // Image Quality
   photoControls.appendChild(
     createSlider({
       labelText: "Image Quality:",
@@ -266,7 +263,6 @@ function createPhotoModeControls(settings) {
     })
   );
 
-  // Background color
   const bgRow = document.createElement("div");
   const bgLabel = document.createElement("label");
   bgLabel.setAttribute("for", "photo-bg-color");
@@ -279,7 +275,6 @@ function createPhotoModeControls(settings) {
   bgRow.appendChild(bgInput);
   photoControls.appendChild(bgRow);
 
-  // Take Photo Button
   const btnRow = document.createElement("div");
   btnRow.style.justifyContent = "flex-end";
   btnRow.style.display = "flex";
@@ -301,7 +296,7 @@ function createPhotoModeControls(settings) {
 }
 
 /**
- * Creates the lighting controls UI section as a DocumentFragment (now includes bloom and light settings).
+ * @description Creates the lighting controls UI section as a DocumentFragment (now includes bloom and light settings).
  * @param {Object} settings - The settings object containing default values.
  * @returns {DocumentFragment} The fragment containing the lighting controls section.
  */
@@ -385,14 +380,14 @@ function createLightingControls(settings) {
 }
 
 /**
- * Loads the full interface by assembling all control sections and appending them to the DOM.
- * Fetches settings from the JSON config and builds the UI using category functions.
+ * @description Loads the full interface by assembling all control sections and appending them to the DOM.
+ * @description Fetches settings from the JSON config and builds the UI using category functions.
  * @returns {Promise<void>} Resolves when the interface is loaded.
  */
 async function loadInterface() {
   const response = await fetch("/config/initial-scene-settings.json");
   const settings = await response.json();
-  // Patch photoMode.resolution if set to window size placeholders
+
   if (
     Array.isArray(settings.photoMode?.resolution) &&
     settings.photoMode.resolution[0] === "window.innerWidth" &&
@@ -401,10 +396,8 @@ async function loadInterface() {
     settings.photoMode.resolution = [window.innerWidth, window.innerHeight];
   }
 
-  // Use a fragment for efficient DOM insertion
   const fragment = document.createDocumentFragment();
 
-  // Create controls container
   const controls = document.createElement("div");
   controls.className = "controls";
 

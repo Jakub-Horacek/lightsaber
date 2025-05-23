@@ -6,6 +6,9 @@ import { setupUI } from "./ui.js";
 import { setupControls, setZoomDefaults } from "./controls.js";
 import { loadInterface } from "./interfaceLoader.js";
 
+/**
+ * @description Animate the scene
+ */
 function animate() {
   requestAnimationFrame(animate);
   if (scene.children[0]) {
@@ -14,6 +17,9 @@ function animate() {
   composer.render();
 }
 
+/**
+ * @description Load the interface and apply the initial settings
+ */
 window.addEventListener("DOMContentLoaded", async () => {
   await loadInterface();
   Promise.all([
@@ -30,5 +36,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
     setupControls();
   });
+
   animate();
 });

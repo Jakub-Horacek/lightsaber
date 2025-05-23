@@ -7,6 +7,11 @@ const loader = new GLTFLoader();
 let saberScene = null;
 let bladeOn = true;
 
+/**
+ * @description Load the saber model and apply the settings
+ * @param {Object} saberSettings
+ * @param {number} emissionIntensity
+ */
 function loadSaberModelAndApplySettings(saberSettings, emissionIntensity) {
   bladeOn = saberSettings.bladeOn;
   loader.load(
@@ -18,7 +23,7 @@ function loadSaberModelAndApplySettings(saberSettings, emissionIntensity) {
         if (saberSettings.model.scale) saberScene.scale.set(...saberSettings.model.scale);
         if (saberSettings.model.rotation) saberScene.rotation.set(...saberSettings.model.rotation);
       }
-      // Set blade material to MeshStandardMaterial (emissive) for both 'Blade' and 'Blade_LightsaberBlade_Blue_0' if found
+
       saberScene.traverse((child) => {
         if (child.isMesh && (child.name === "Blade" || child.name === "Blade_LightsaberBlade_Blue_0")) {
           child.material = new THREE.MeshStandardMaterial({
@@ -33,7 +38,7 @@ function loadSaberModelAndApplySettings(saberSettings, emissionIntensity) {
           child.visible = true;
         }
       });
-      // Set emission to match slider value on load (from scene settings)
+
       if (typeof emissionIntensity === "number") {
         saberScene.traverse((child) => {
           if (child.isMesh && (child.name === "Blade" || child.name === "Blade_LightsaberBlade_Blue_0")) {
@@ -50,15 +55,9 @@ function loadSaberModelAndApplySettings(saberSettings, emissionIntensity) {
       toggleBlade(saberScene, bladeOn, 0);
       scene.add(saberScene);
       ensureLayers(saberScene);
-      // Expose for controls.js drag
+
       window.saberScene = saberScene;
       window.scene = scene;
-      // TEMP: Log all mesh names in the saber scene
-      saberScene.traverse((child) => {
-        if (child.isMesh) {
-          console.log("Saber mesh:", child.name);
-        }
-      });
     },
     undefined,
     function (error) {
@@ -67,6 +66,10 @@ function loadSaberModelAndApplySettings(saberSettings, emissionIntensity) {
   );
 }
 
+/**
+ * @description Ensure the layers are set for the object
+ * @param {Object} obj
+ */
 function ensureLayers(obj) {
   if (obj && !obj.layers) {
     obj.layers = new THREE.Layers();

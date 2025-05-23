@@ -4,7 +4,9 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import * as THREE from "three";
 import { scene, camera, renderer } from "./scene.js";
 
-// Default values in case config is not loaded yet
+/**
+ * @description Default values in case config is not loaded yet
+ */
 let bloomParams = {
   exposure: 1,
   bloomStrength: 0.5,
@@ -12,7 +14,9 @@ let bloomParams = {
   bloomRadius: 0.75,
 };
 
-// Load config/initial-scene-settings.json and update bloomParams
+/**
+ * @description Load config/initial-scene-settings.json and update bloomParams
+ */
 (async () => {
   try {
     const response = await fetch("/config/initial-scene-settings.json");
@@ -24,7 +28,7 @@ let bloomParams = {
         bloomThreshold: config.bloomThreshold ?? 1,
         bloomRadius: config.bloomRadius ?? 0.75,
       };
-      // Update bloomPass if already created
+
       if (window.bloomPass) {
         window.bloomPass.strength = bloomParams.bloomStrength;
         window.bloomPass.threshold = bloomParams.bloomThreshold;
@@ -32,7 +36,7 @@ let bloomParams = {
       }
     }
   } catch (e) {
-    // Use defaults if fetch fails
+    console.error("Error loading initial scene settings:", e);
   }
 })();
 

@@ -6,20 +6,29 @@ import { toggleBlade } from "./saber.js";
 
 let bladeOn = true;
 
-function getSaberFocusDistance(camera, saber) {
-  if (!saber) return 100;
-  // Get world position of saber
-  const saberPos = new THREE.Vector3();
-  saber.getWorldPosition(saberPos);
-  // Get world position of camera
-  const camPos = new THREE.Vector3();
-  camera.getWorldPosition(camPos);
-  return camPos.distanceTo(saberPos);
+/**
+ * @description Helper to sync a slider and value display, and run a callback on input
+ * @param {HTMLInputElement} slider - The slider input element
+ * @param {HTMLElement} valueElem - The element to display the value
+ * @param {Function} onInput - Callback to run on input (receives the parsed value)
+ */
+function setupSlider(slider, valueElem, onInput) {
+  if (slider && valueElem) {
+    valueElem.textContent = slider.value;
+    slider.addEventListener("input", () => {
+      const val = parseFloat(slider.value);
+      valueElem.textContent = slider.value;
+      if (onInput) onInput(val);
+    });
+  }
 }
 
+/**
+ * @description Setup the UI
+ */
 function setupUI() {
-  // Toggle blade switch (new version)
   const toggle = document.getElementById("toggle-switch");
+
   if (toggle) {
     toggle.checked = bladeOn;
     toggle.addEventListener("change", () => {
@@ -30,85 +39,42 @@ function setupUI() {
     });
   }
 
-  // Bloom controls
-  const bloomStrengthSlider = document.getElementById("bloom-strength-slider");
-  const bloomStrengthValue = document.getElementById("bloom-strength-value");
-  if (bloomStrengthSlider && bloomStrengthValue) {
-    bloomStrengthValue.textContent = bloomStrengthSlider.value;
-    bloomStrengthSlider.addEventListener("input", () => {
-      bloomPass.strength = parseFloat(bloomStrengthSlider.value);
-      bloomStrengthValue.textContent = bloomStrengthSlider.value;
-    });
-  }
-  const bloomThresholdSlider = document.getElementById("bloom-threshold-slider");
-  const bloomThresholdValue = document.getElementById("bloom-threshold-value");
-  if (bloomThresholdSlider && bloomThresholdValue) {
-    bloomThresholdValue.textContent = bloomThresholdSlider.value;
-    bloomThresholdSlider.addEventListener("input", () => {
-      bloomPass.threshold = parseFloat(bloomThresholdSlider.value);
-      bloomThresholdValue.textContent = bloomThresholdSlider.value;
-    });
-  }
-  const bloomRadiusSlider = document.getElementById("bloom-radius-slider");
-  const bloomRadiusValue = document.getElementById("bloom-radius-value");
-  if (bloomRadiusSlider && bloomRadiusValue) {
-    bloomRadiusValue.textContent = bloomRadiusSlider.value;
-    bloomRadiusSlider.addEventListener("input", () => {
-      bloomPass.radius = parseFloat(bloomRadiusSlider.value);
-      bloomRadiusValue.textContent = bloomRadiusSlider.value;
-    });
-  }
-  const bloomExposureSlider = document.getElementById("bloom-exposure-slider");
-  const bloomExposureValue = document.getElementById("bloom-exposure-value");
-  if (bloomExposureSlider && bloomExposureValue) {
-    bloomExposureValue.textContent = bloomExposureSlider.value;
-    bloomExposureSlider.addEventListener("input", () => {
-      renderer.toneMappingExposure = parseFloat(bloomExposureSlider.value);
-      bloomExposureValue.textContent = bloomExposureSlider.value;
-    });
-  }
+  setupSlider(document.getElementById("bloom-strength-slider"), document.getElementById("bloom-strength-value"), (val) => {
+    bloomPass.strength = val;
+  });
 
-  // Scene light controls
-  const ambientLightSlider = document.getElementById("ambient-light-slider");
-  const ambientLightValue = document.getElementById("ambient-light-value");
-  if (ambientLightSlider && ambientLightValue) {
-    ambientLightValue.textContent = ambientLightSlider.value;
-    ambientLightSlider.addEventListener("input", () => {
-      ambientLight.intensity = parseFloat(ambientLightSlider.value);
-      ambientLightValue.textContent = ambientLightSlider.value;
-    });
-  }
-  const directionalLightSlider = document.getElementById("directional-light-slider");
-  const directionalLightValue = document.getElementById("directional-light-value");
-  if (directionalLightSlider && directionalLightValue) {
-    directionalLightValue.textContent = directionalLightSlider.value;
-    directionalLightSlider.addEventListener("input", () => {
-      directionalLight.intensity = parseFloat(directionalLightSlider.value);
-      directionalLightValue.textContent = directionalLightSlider.value;
-    });
-  }
+  setupSlider(document.getElementById("bloom-threshold-slider"), document.getElementById("bloom-threshold-value"), (val) => {
+    bloomPass.threshold = val;
+  });
 
-  // Drag rotation speed control
-  const dragSpeedSlider = document.getElementById("drag-rotation-speed-slider");
-  const dragSpeedValue = document.getElementById("drag-rotation-speed-value");
-  if (dragSpeedSlider && dragSpeedValue) {
-    dragSpeedValue.textContent = dragSpeedSlider.value;
-    dragSpeedSlider.addEventListener("input", () => {
-      dragSpeedValue.textContent = dragSpeedSlider.value;
-    });
-  }
+  setupSlider(document.getElementById("bloom-radius-slider"), document.getElementById("bloom-radius-value"), (val) => {
+    bloomPass.radius = val;
+  });
 
-  // Photo mode sliders
-  const photoQualitySlider = document.getElementById("photo-quality-slider");
-  const photoQualityValue = document.getElementById("photo-quality-value");
-  if (photoQualitySlider && photoQualityValue) {
-    photoQualityValue.textContent = photoQualitySlider.value;
-    photoQualitySlider.addEventListener("input", () => {
-      photoQualityValue.textContent = photoQualitySlider.value;
-    });
-  }
+  setupSlider(document.getElementById("bloom-exposure-slider"), document.getElementById("bloom-exposure-value"), (val) => {
+    renderer.toneMappingExposure = val;
+  });
 
-  // Background color live update
+  setupSlider(document.getElementById("ambient-light-slider"), document.getElementById("ambient-light-value"), (val) => {
+    ambientLight.intensity = val;
+  });
+
+  setupSlider(document.getElementById("directional-light-slider"), document.getElementById("directional-light-value"), (val) => {
+    directionalLight.intensity = val;
+  });
+
+  setupSlider(
+    document.getElementById("drag-rotation-speed-slider"),
+    document.getElementById("drag-rotation-speed-value"),
+    () => {} // Only updates value display
+  );
+
+  setupSlider(
+    document.getElementById("photo-quality-slider"),
+    document.getElementById("photo-quality-value"),
+    () => {} // Only updates value display
+  );
+
   const bgInput = document.getElementById("photo-bg-color");
   if (bgInput) {
     bgInput.addEventListener("input", () => {
@@ -116,7 +82,6 @@ function setupUI() {
     });
   }
 
-  // Emission intensity slider
   const slider = document.getElementById("emission-intensity-slider");
   let sliderValue = document.getElementById("emission-intensity-value");
   if (!sliderValue && slider) {

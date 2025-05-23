@@ -1,9 +1,7 @@
 import * as THREE from "three";
 
-// Saber utility functions
-
 /**
- * Animates the blade node(s) to shrink (off) or grow (on) along their longest axis.
+ * @description Animates the blade node(s) to shrink (off) or grow (on) along their longest axis.
  * @param {THREE.Object3D} scene - The root scene of the loaded GLTF.
  * @param {boolean} bladeOn - Whether the blade should be on (grow) or off (shrink).
  * @param {number} [duration=500] - Animation duration in ms.
@@ -22,8 +20,7 @@ export function toggleBlade(scene, bladeOn, duration = 500) {
       maxVal = scale;
     }
 
-    // Get blade length (assuming geometry is BufferGeometry)
-    let bladeLength = 1; // default fallback
+    let bladeLength = 1;
     if (blade.geometry && blade.geometry.boundingBox) {
       bladeLength = blade.geometry.boundingBox.max.z - blade.geometry.boundingBox.min.z;
     } else if (blade.geometry) {
