@@ -410,30 +410,35 @@ function createLightingControls(settings) {
  * @returns {Promise<void>} Resolves when the interface is loaded.
  */
 async function loadInterface() {
-  const response = await fetch("/config/initial-scene-settings.json");
-  const settings = await response.json();
+  try {
+    const response = await fetch("/initial-scene-settings.json");
+    if (!response.ok) throw new Error("initial-scene-settings.json not found");
+    const settings = await response.json();
 
-  if (
-    Array.isArray(settings.photoMode?.resolution) &&
-    settings.photoMode.resolution[0] === "window.innerWidth" &&
-    settings.photoMode.resolution[1] === "window.innerHeight"
-  ) {
-    settings.photoMode.resolution = [window.innerWidth, window.innerHeight];
+    if (
+      Array.isArray(settings.photoMode?.resolution) &&
+      settings.photoMode.resolution[0] === "window.innerWidth" &&
+      settings.photoMode.resolution[1] === "window.innerHeight"
+    ) {
+      settings.photoMode.resolution = [window.innerWidth, window.innerHeight];
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    const controls = document.createElement("div");
+    controls.className = "controls";
+
+    controls.appendChild(createBladeControls(settings));
+    controls.appendChild(createSceneControls(settings));
+    controls.appendChild(createDragControls(settings));
+    controls.appendChild(createPhotoModeControls(settings));
+    controls.appendChild(createLightingControls(settings));
+
+    fragment.appendChild(controls);
+    document.body.appendChild(fragment);
+  } catch (error) {
+    console.error("Failed to load interface settings:", error);
   }
-
-  const fragment = document.createDocumentFragment();
-
-  const controls = document.createElement("div");
-  controls.className = "controls";
-
-  controls.appendChild(createBladeControls(settings));
-  controls.appendChild(createSceneControls(settings));
-  controls.appendChild(createDragControls(settings));
-  controls.appendChild(createPhotoModeControls(settings));
-  controls.appendChild(createLightingControls(settings));
-
-  fragment.appendChild(controls);
-  document.body.appendChild(fragment);
 }
 
 export { loadInterface };

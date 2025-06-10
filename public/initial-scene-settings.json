@@ -1,0 +1,18 @@
+{
+  "emissionIntensity": 0.8,
+  "bloomStrength": 0.5,
+  "bloomThreshold": 1,
+  "bloomRadius": 0.75,
+  "bloomExposure": 1,
+  "ambientLight": 7.5,
+  "directionalLight": 2.15,
+  "zoomMin": 10,
+  "zoomMax": 350,
+  "zoomSpeed": 25,
+  "dragRotationSpeed": 0.01,
+  "photoMode": {
+    "resolution": ["window.innerWidth", "window.innerHeight"],
+    "imageQuality": 0.92,
+    "background": "#000000"
+  }
+}

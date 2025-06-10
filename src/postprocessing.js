@@ -19,7 +19,7 @@ let bloomParams = {
  */
 (async () => {
   try {
-    const response = await fetch("/config/initial-scene-settings.json");
+    const response = await fetch("/initial-scene-settings.json");
     if (response.ok) {
       const config = await response.json();
       bloomParams = {

@@ -30,19 +30,29 @@ function animate() {
 window.addEventListener("DOMContentLoaded", async () => {
   await loadInterface();
   Promise.all([
-    fetch("/config/initial-scene-settings.json").then((r) => r.json()),
-    fetch("/config/saber-initial-state.json").then((r) => r.json()),
-  ]).then(([sceneSettings, saberSettings]) => {
-    applySceneSettings(sceneSettings);
-    setupUI();
-    loadSaberModelAndApplySettings(saberSettings, sceneSettings.emissionIntensity);
-    setZoomDefaults({
-      min: sceneSettings.zoomMin,
-      max: sceneSettings.zoomMax,
-      speed: sceneSettings.zoomSpeed,
+    fetch("/initial-scene-settings.json").then((r) => {
+      if (!r.ok) throw new Error("initial-scene-settings.json not found");
+      return r.json();
+    }),
+    fetch("/saber-initial-state.json").then((r) => {
+      if (!r.ok) throw new Error("saber-initial-state.json not found");
+      return r.json();
+    }),
+  ])
+    .then(([sceneSettings, saberSettings]) => {
+      applySceneSettings(sceneSettings);
+      setupUI();
+      loadSaberModelAndApplySettings(saberSettings, sceneSettings.emissionIntensity);
+      setZoomDefaults({
+        min: sceneSettings.zoomMin,
+        max: sceneSettings.zoomMax,
+        speed: sceneSettings.zoomSpeed,
+      });
+      setupControls();
+    })
+    .catch((error) => {
+      console.error("Failed to load settings:", error);
     });
-    setupControls();
-  });
 
   animate();
 });
